@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Quest for Adi 💙</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Uncial+Antiqua&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sea: #0a2a4a;
+    --deep: #041020;
+    --ocean: #1a5276;
+    --foam: #aed6f1;
+    --gold: #f4d03f;
+    --lightning: #fff176;
+    --pink: #f9a8d4;
+    --white: #f0f8ff;
+    --glow: rgba(174, 214, 241, 0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--deep);
+    font-family: 'Lora', serif;
+    color: var(--white);
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ── CANVAS BACKGROUND ── */
+  #bg-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ── SECTIONS ── */
+  .scene {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    padding: 40px 20px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .scene.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .scene.hidden { display: none; }
+
+  /* ── SCENE 1: COVER ── */
+  #scene-1 {
+    text-align: center;
+    background: radial-gradient(ellipse at center bottom, #0d3b6e 0%, var(--deep) 70%);
+  }
+
+  .trident {
+    font-size: 80px;
+    animation: float 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px var(--foam));
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-15px) rotate(5deg); }
+  }
+
+  .main-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: clamp(28px, 6vw, 56px);
+    color: var(--foam);
+    text-shadow: 0 0 30px var(--ocean), 0 0 60px rgba(26,82,118,0.5);
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    font-family: 'Uncial Antiqua', cursive;
+    font-size: clamp(14px, 3vw, 22px);
+    color: var(--gold);
+    letter-spacing: 3px;
+    margin-bottom: 30px;
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes glow-pulse {
+    0%, 100% { text-shadow: 0 0 10px var(--gold); }
+    50% { text-shadow: 0 0 25px var(--gold), 0 0 50px rgba(244,208,63,0.4); }
+  }
+
+  .cover-text {
+    max-width: 560px;
+    font-size: clamp(15px, 2.5vw, 18px);
+    line-height: 1.9;
+    color: var(--foam);
+    opacity: 0.9;
+    margin-bottom: 40px;
+    font-style: italic;
+  }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    border: 2px solid var(--foam);
+    background: transparent;
+    color: var(--foam);
+    font-family: 'Uncial Antiqua', cursive;
+    font-size: 16px;
+    letter-spacing: 2px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--ocean);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+    z-index: -1;
+  }
+
+  .btn:hover::before { transform: scaleX(1); }
+  .btn:hover {
+    box-shadow: 0 0 25px var(--foam), 0 0 50px rgba(174,214,241,0.2);
+    transform: translateY(-2px);
+  }
+  .btn:active { transform: translateY(0) scale(0.98); }
+
+  .btn-gold {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+  .btn-gold::before { background: rgba(244,208,63,0.15); }
+  .btn-gold:hover { box-shadow: 0 0 25px var(--gold); }
+
+  /* ── SCENE 2: LIGHTNING THIEF ── */
+  #scene-2 {
+    background: radial-gradient(ellipse at top, #1a1a2e 0%, #16213e 50%, var(--deep) 100%);
+  }
+
+  .book-badge {
+    font-family: 'Uncial Antiqua', cursive;
+    font-size: 12px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    opacity: 0.8;
+  }
+
+  .scene-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: clamp(22px, 5vw, 42px);
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  .lightning-text { color: var(--lightning); text-shadow: 0 0 20px var(--lightning); }
+  .sea-text { color: var(--foam); text-shadow: 0 0 20px var(--foam); }
+  .pink-text { color: var(--pink); }
+
+  .card {
+    max-width: 620px;
+    width: 100%;
+    background: rgba(10, 42, 74, 0.6);
+    border: 1px solid rgba(174, 214, 241, 0.25);
+    border-radius: 20px;
+    padding: 32px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(174,214,241,0.1);
+    margin-bottom: 30px;
+    text-align: center;
+  }
+
+  .card p {
+    font-size: clamp(15px, 2.5vw, 17px);
+    line-height: 2;
+    color: var(--white);
+    opacity: 0.9;
+  }
+
+  .emoji-row {
+    font-size: 36px;
+    margin: 16px 0;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .emoji-row span {
+    animation: float 3s ease-in-out infinite;
+    display: inline-block;
+  }
+  .emoji-row span:nth-child(2) { animation-delay: 0.5s; }
+  .emoji-row span:nth-child(3) { animation-delay: 1s; }
+  .emoji-row span:nth-child(4) { animation-delay: 1.5s; }
+
+  /* ── SCENE 3: SEA OF MONSTERS ── */
+  #scene-3 {
+    background: radial-gradient(ellipse at bottom, #0a3d62 0%, #041020 70%);
+  }
+
+  /* ── SCENE 4: YOU ARE MY ANNABETH ── */
+  #scene-4 {
+    background: radial-gradient(ellipse at center, #1a0a2e 0%, var(--deep) 70%);
+  }
+
+  .love-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    max-width: 620px;
+    width: 100%;
+    margin: 24px 0;
+  }
+
+  .love-item {
+    background: rgba(249, 168, 212, 0.1);
+    border: 1px solid rgba(249,168,212,0.3);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .love-item:hover {
+    background: rgba(249,168,212,0.2);
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(249,168,212,0.3);
+  }
+
+  .love-item .icon { font-size: 32px; margin-bottom: 8px; }
+  .love-item .label {
+    font-family: 'Uncial Antiqua', cursive;
+    font-size: 13px;
+    color: var(--pink);
+    letter-spacing: 1px;
+  }
+  .love-item .desc {
+    font-size: 13px;
+    color: var(--foam);
+    opacity: 0.8;
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  /* ── SCENE 5: FINAL ── */
+  #scene-5 {
+    background: radial-gradient(ellipse at center, #0d3b6e 0%, var(--deep) 70%);
+    text-align: center;
+  }
+
+  .final-quote {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: clamp(18px, 4vw, 32px);
+    color: var(--gold);
+    text-shadow: 0 0 30px var(--gold);
+    margin: 20px 0;
+    line-height: 1.5;
+  }
+
+  .heart-burst {
+    font-size: 60px;
+    animation: heartbeat 1.2s ease-in-out infinite;
+  }
+
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    15% { transform: scale(1.15); }
+    30% { transform: scale(1); }
+    45% { transform: scale(1.08); }
+  }
+
+  /* ── PROGRESS DOTS ── */
+  .progress-dots {
+    position: fixed;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: rgba(174,214,241,0.3);
+    border: 2px solid rgba(174,214,241,0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .dot.active {
+    background: var(--foam);
+    box-shadow: 0 0 10px var(--foam);
+  }
+
+  /* ── WAVE DIVIDER ── */
+  .wave-divider {
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+    opacity: 0.3;
+    margin: 10px 0;
+  }
+
+  /* ── SCROLL HINT ── */
+  .scroll-hint {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    opacity: 0.5;
+    font-size: 12px;
+    letter-spacing: 2px;
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-8px); }
+  }
+
+  /* ── LIGHTNING FLASH ── */
+  .flash-overlay {
+    position: fixed;
+    inset: 0;
+    background: white;
+    z-index: 999;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.1s;
+  }
+
+  /* ── RIPPLE ── */
+  .ripple-container {
+    position: relative;
+    overflow: hidden;
+  }
+
+  @keyframes ripple {
+    0% { transform: scale(0); opacity: 0.6; }
+    100% { transform: scale(4); opacity: 0; }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 480px) {
+    .progress-dots { right: 12px; }
+    .card { padding: 20px; }
+    .love-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<div class="flash-overlay" id="flash"></div>
+
+<!-- Progress Dots -->
+<div class="progress-dots" id="dots"></div>
+
+<!-- ══════════════════════════ SCENE 1 ══════════════════════════ -->
+<div class="scene active" id="scene-1">
+  <span class="trident">🔱</span>
+  <div class="main-title">A Quest for Adi</div>
+  <div class="subtitle">⚡ A Love Story in Two Books ⚡</div>
+  <p class="cover-text">
+    Percy battled gods and monsters, baby.<br>
+    None of it compares to how I feel about you.
+  </p>
+  <button class="btn ripple-container" onclick="goTo(2)">
+    Begin the Quest ⚡
+  </button>
+  <div class="scroll-hint">▼ TAP TO CONTINUE ▼</div>
+</div>
+
+<!-- ══════════════════════════ SCENE 2 ══════════════════════════ -->
+<div class="scene hidden" id="scene-2">
+  <div class="book-badge">📖 Book One</div>
+  <div class="scene-title"><span class="lightning-text">The Lightning Thief</span></div>
+
+  <div class="emoji-row">
+    <span>⚡</span><span>🏛️</span><span>🌊</span><span>🎒</span>
+  </div>
+
+  <div class="card">
+    <p>
+      Percy didn't know he was a son of Poseidon —<br>
+      he just knew the sea felt like home.
+    </p>
+    <br>
+    <p style="color: var(--pink); font-style: italic;">
+      The moment I met you, pillu,<br>
+      my heart forgot its rhythm.<br>
+      And suddenly — <strong>everything made sense.</strong>
+    </p>
+  </div>
+
+  <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+    <button class="btn" onclick="goTo(1)">← Back</button>
+    <button class="btn btn-gold ripple-container" onclick="goTo(3)">Book Two →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════ SCENE 3 ══════════════════════════ -->
+<div class="scene hidden" id="scene-3">
+  <div class="book-badge">📖 Book Two</div>
+  <div class="scene-title"><span class="sea-text">The Sea of Monsters</span></div>
+
+  <div class="emoji-row">
+    <span>🌊</span><span>🐑</span><span>🔮</span><span>⚓</span>
+  </div>
+
+  <div class="card">
+    <p>
+      Percy sailed into the Sea of Monsters<br>
+      not because it was safe —<br>
+      but because someone he loved needed him.
+    </p>
+    <br>
+    <p style="color: var(--pink); font-style: italic;">
+      That's love, bubu.<br>
+      Sailing into the unknown,<br>
+      <strong>just to come back to them.</strong>
+    </p>
+  </div>
+
+  <div class="card">
+    <p style="font-style: italic; line-height: 2.1;">
+      The Golden Fleece could heal anything.<br><br>
+      <span style="color: var(--pink);">
+        You are mine, baby.<br>
+        On every hard day, just thinking of you<br>
+        puts everything back together.
+      </span>
+    </p>
+  </div>
+
+  <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+    <button class="btn" onclick="goTo(2)">← Book One</button>
+    <button class="btn btn-gold ripple-container" onclick="goTo(4)">My Annabeth →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════ SCENE 4 ══════════════════════════ -->
+<div class="scene hidden" id="scene-4">
+  <div class="book-badge">💕 For Adi</div>
+  <div class="scene-title"><span class="pink-text">You Are My Annabeth</span></div>
+
+  <div class="card" style="border-color: rgba(249,168,212,0.3); background: rgba(20,5,15,0.6);">
+    <p style="line-height: 2.1;">
+      Annabeth was Percy's anchor —<br>
+      brave, brilliant, and somehow she chose <em>him.</em><br><br>
+      <span style="color: var(--pink);">
+        That's how I feel, pillu.<br>
+        Somehow, impossibly, <strong>you chose me.</strong>
+      </span>
+    </p>
+  </div>
+
+  <div class="love-grid">
+    <div class="love-item" onclick="revealLove(this)">
+      <div class="icon">🌊</div>
+      <div class="label">Your Calm</div>
+      <div class="desc">Like the sea — wild and peaceful at once</div>
+    </div>
+    <div class="love-item" onclick="revealLove(this)">
+      <div class="icon">⚡</div>
+      <div class="label">Your Spark</div>
+      <div class="desc">You light up every room you walk into</div>
+    </div>
+    <div class="love-item" onclick="revealLove(this)">
+      <div class="icon">🏛️</div>
+      <div class="label">Your Mind</div>
+      <div class="desc">Sharp, clever, and endlessly fascinating</div>
+    </div>
+    <div class="love-item" onclick="revealLove(this)">
+      <div class="icon">🛡️</div>
+      <div class="label">Your Strength</div>
+      <div class="desc">Braver than you'll ever know</div>
+    </div>
+    <div class="love-item" onclick="revealLove(this)">
+      <div class="icon">🌙</div>
+      <div class="label">Your Laugh</div>
+      <div class="desc">My favourite sound in any world</div>
+    </div>
+    <div class="love-item" onclick="revealLove(this)">
+      <div class="icon">💙</div>
+      <div class="label">All of You</div>
+      <div class="desc">Every single part — completely, always</div>
+    </div>
+  </div>
+
+  <p style="font-size: 13px; color: rgba(174,214,241,0.5); margin-bottom: 20px; font-style: italic;">tap the cards 💕</p>
+
+  <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+    <button class="btn" onclick="goTo(3)">← Back</button>
+    <button class="btn btn-gold ripple-container" onclick="goTo(5)">The Final Chapter →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════ SCENE 5 ══════════════════════════ -->
+<div class="scene hidden" id="scene-5">
+  <div class="heart-burst">💙</div>
+
+  <div class="final-quote">
+    "Every quest has an ending.<br>
+    Ours is just beginning."
+  </div>
+
+  <div class="card" style="max-width: 560px; border-color: rgba(244,208,63,0.4); background: rgba(5,15,30,0.7);">
+    <p style="line-height: 2.2; font-size: clamp(15px, 2.5vw, 18px);">
+      <span style="color: var(--pink); font-style: italic;">
+        Even in silence, even in distance, bubu —<br>
+        there's always something between us,<br>
+        warm, deep, and real.
+      </span>
+      <br><br>
+      <span style="color: var(--gold); font-style: italic;">
+        I'd sail every sea for you, baby.<br>
+        I'd choose you on every quest,<br>
+        in every life, in every book.
+      </span>
+      <br><br>
+      <strong style="color: var(--foam);">I love you, Adi. 🔱</strong>
+    </p>
+  </div>
+
+  <div class="emoji-row" style="margin: 10px 0;">
+    <span>🔱</span><span>⚡</span><span>💙</span><span>🌊</span><span>✨</span>
+  </div>
+
+  <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+    <button class="btn" onclick="goTo(4)">← Back</button>
+    <button class="btn btn-gold ripple-container" onclick="goTo(1)">Read Again 🔄</button>
+  </div>
+</div>
+
+<script>
+// ── CANVAS WAVES + PARTICLES ──
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [], stars = [];
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+// Stars
+for (let i = 0; i < 120; i++) {
+  stars.push({
+    x: Math.random(),
+    y: Math.random() * 0.7,
+    r: Math.random() * 1.5 + 0.3,
+    alpha: Math.random(),
+    speed: Math.random() * 0.005 + 0.002
+  });
+}
+
+// Particles
+function spawnParticle() {
+  particles.push({
+    x: Math.random() * W,
+    y: H + 10,
+    r: Math.random() * 3 + 1,
+    vx: (Math.random() - 0.5) * 0.5,
+    vy: -(Math.random() * 1.5 + 0.5),
+    alpha: 0.6,
+    color: Math.random() > 0.5 ? '#aed6f1' : '#f4d03f'
+  });
+}
+
+let waveOffset = 0;
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+
+  // Stars
+  stars.forEach(s => {
+    s.alpha += s.speed;
+    if (s.alpha > 1 || s.alpha < 0) s.speed *= -1;
+    ctx.save();
+    ctx.globalAlpha = Math.abs(s.alpha);
+    ctx.fillStyle = '#aed6f1';
+    ctx.beginPath();
+    ctx.arc(s.x * W, s.y * H, s.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  });
+
+  // Waves
+  waveOffset += 0.008;
+  for (let w = 0; w < 3; w++) {
+    ctx.beginPath();
+    ctx.moveTo(0, H);
+    const amp = 25 - w * 6;
+    const freq = 0.003 + w * 0.001;
+    const yBase = H * 0.75 + w * 30;
+    for (let x = 0; x <= W; x += 5) {
+      const y = yBase + Math.sin(x * freq + waveOffset + w * 1.2) * amp
+                       + Math.sin(x * 0.007 - waveOffset * 0.7) * (amp * 0.4);
+      ctx.lineTo(x, y);
+    }
+    ctx.lineTo(W, H);
+    ctx.closePath();
+    const alpha = [0.08, 0.06, 0.04][w];
+    ctx.fillStyle = `rgba(26, 82, 118, ${alpha})`;
+    ctx.fill();
+  }
+
+  // Particles
+  if (Math.random() < 0.08) spawnParticle();
+  particles = particles.filter(p => p.alpha > 0.01);
+  particles.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.alpha -= 0.004;
+    ctx.save();
+    ctx.globalAlpha = p.alpha;
+    ctx.fillStyle = p.color;
+    ctx.shadowBlur = 6;
+    ctx.shadowColor = p.color;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  });
+
+  requestAnimationFrame(draw);
+}
+draw();
+
+// ── NAVIGATION ──
+const totalScenes = 5;
+let current = 1;
+
+function buildDots() {
+  const container = document.getElementById('dots');
+  for (let i = 1; i <= totalScenes; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 1 ? ' active' : '');
+    d.onclick = () => goTo(i);
+    d.title = ['Intro', 'Book 1', 'Book 2', 'For You', 'Finale'][i - 1];
+    container.appendChild(d);
+  }
+}
+buildDots();
+
+function updateDots() {
+  document.querySelectorAll('.dot').forEach((d, i) => {
+    d.classList.toggle('active', i + 1 === current);
+  });
+}
+
+function goTo(n) {
+  if (n === current) return;
+
+  // Lightning flash on scene change
+  if (n !== current) flashEffect();
+
+  const prev = document.getElementById('scene-' + current);
+  prev.classList.remove('active');
+  setTimeout(() => {
+    prev.classList.add('hidden');
+    const next = document.getElementById('scene-' + n);
+    next.classList.remove('hidden');
+    setTimeout(() => next.classList.add('active'), 20);
+    current = n;
+    updateDots();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, 400);
+}
+
+function flashEffect() {
+  const flash = document.getElementById('flash');
+  flash.style.opacity = '0.15';
+  setTimeout(() => flash.style.opacity = '0', 200);
+}
+
+// ── RIPPLE EFFECT ──
+document.querySelectorAll('.ripple-container').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    const circle = document.createElement('span');
+    const rect = this.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    circle.style.cssText = `
+      position:absolute; border-radius:50%;
+      width:${size}px; height:${size}px;
+      left:${e.clientX - rect.left - size/2}px;
+      top:${e.clientY - rect.top - size/2}px;
+      background:rgba(255,255,255,0.2);
+      pointer-events:none;
+      animation: ripple 0.6s ease-out forwards;
+    `;
+    this.appendChild(circle);
+    setTimeout(() => circle.remove(), 600);
+  });
+});
+
+// ── LOVE CARDS ──
+function revealLove(el) {
+  el.style.background = 'rgba(249,168,212,0.25)';
+  el.style.borderColor = 'rgba(249,168,212,0.7)';
+  el.style.boxShadow = '0 0 20px rgba(249,168,212,0.4)';
+  spawnHearts(el);
+}
+
+function spawnHearts(el) {
+  const rect = el.getBoundingClientRect();
+  for (let i = 0; i < 5; i++) {
+    const h = document.createElement('div');
+    h.textContent = ['💙','💕','⚡','🌊','✨'][i];
+    h.style.cssText = `
+      position:fixed;
+      left:${rect.left + Math.random() * rect.width}px;
+      top:${rect.top}px;
+      font-size:20px;
+      pointer-events:none;
+      z-index:1000;
+      animation: floatUp 1.2s ease-out forwards;
+    `;
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 1200);
+  }
+}
+
+// Float up keyframe
+const styleEl = document.createElement('style');
+styleEl.textContent = `
+  @keyframes floatUp {
+    0% { opacity:1; transform: translateY(0) scale(1); }
+    100% { opacity:0; transform: translateY(-80px) scale(0.5); }
+  }
+`;
+document.head.appendChild(styleEl);
+
+// ── KEYBOARD NAV ──
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' && current < totalScenes) goTo(current + 1);
+  if (e.key === 'ArrowLeft' && current > 1) goTo(current - 1);
+});
+
+// ── TOUCH SWIPE ──
+let touchStartX = 0;
+document.addEventListener('touchstart', e => touchStartX = e.touches[0].clientX);
+document.addEventListener('touchend', e => {
+  const diff = touchStartX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 60) {
+    if (diff > 0 && current < totalScenes) goTo(current + 1);
+    if (diff < 0 && current > 1) goTo(current - 1);
+  }
+});
+</script>
+</body>
+</html>
